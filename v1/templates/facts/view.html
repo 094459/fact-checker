@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fact-detail">
+    <h2>{{ fact.title }}</h2>
+    
+    <div class="fact-meta">
+        <p>Posted by: {{ fact.author.name }}</p>
+        <p>Category: {{ fact.category.name }}</p>
+        <p>Date: {{ fact.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+    
+    <div class="fact-content">
+        {{ fact.content }}
+    </div>
+    
+    {% if fact.source_url %}
+        <div class="fact-source">
+            <p>Source: <a href="{{ fact.source_url }}" target="_blank">{{ fact.source_url }}</a></p>
+        </div>
+    {% endif %}
+    
+    <div class="voting-section">
+        <h3>Vote on this fact:</h3>
+        {% if user_vote %}
+            <p>You voted: {{ user_vote.vote_type }}</p>
+        {% endif %}
+        
+        <form method="POST" action="{{ url_for('facts.vote', fact_id=fact.id) }}" class="vote-form">
+            <div class="vote-buttons">
+                <button type="submit" name="vote_type" value="Fact" class="button fact-button">Fact</button>
+                <button type="submit" name="vote_type" value="Fake" class="button fake-button">Fake</button>
+            </div>
+            
+            <div class="supporting-info">
+                <label for="supporting_info">Supporting Information:</label>
+                <textarea name="supporting_info" id="supporting_info" rows="4" placeholder="Share any supporting evidence or references..."></textarea>
+            </div>
+        </form>
+        
+        <div class="vote-stats">
+            <p>Current votes:</p>
+            <span class="fact-count">Facts: {{ fact.votes|selectattr('vote_type', 'equalto', 'Fact')|list|length }}</span>
+            <span class="fake-count">Fakes: {{ fact.votes|selectattr('vote_type', 'equalto', 'Fake')|list|length }}</span>
+        </div>
+        
+        {% if vote_history %}
+        <div class="supporting-info-history">
+            <h4>Supporting Information History:</h4>
+            {% for vote in vote_history %}
+            <div class="vote-info">
+                <p class="vote-meta">{{ vote.user.name }} voted {{ vote.vote_type }} on {{ vote.created_at.strftime('%Y-%m-%d') }}</p>
+                {% if vote.supporting_info %}
+                <p class="supporting-text">{{ vote.supporting_info }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

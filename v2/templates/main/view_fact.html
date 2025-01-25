@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ fact.title }}{% endblock %}
+
+{% block content %}
+<div class="fact-detail-container">
+    <h1>{{ fact.title }}</h1>
+    <div class="fact-meta">
+        <p>Category: {{ fact.category.name }}</p>
+        <p>Posted by: {{ fact.author.name }}</p>
+        <p>Date: {{ fact.created_at.strftime('%Y-%m-%d') }}</p>
+    </div>
+    
+    <div class="fact-content">
+        <p>{{ fact.content }}</p>
+    </div>
+    
+    <div class="voting-section">
+        <h2>Verify This Fact</h2>
+        <form method="POST" action="{{ url_for('main.vote', fact_id=fact.id) }}">
+            <div class="voting-buttons">
+                <button type="submit" name="is_fact" value="true" class="btn-fact">Fact</button>
+                <button type="submit" name="is_fact" value="false" class="btn-fake">Fake</button>
+            </div>
+            <div class="form-group">
+                <label for="supporting_info">Supporting Information:</label>
+                <textarea id="supporting_info" name="supporting_info"></textarea>
+            </div>
+            <button type="submit">Submit Vote</button>
+        </form>
+    </div>
+    
+    <div class="votes-section">
+        <h2>Community Votes</h2>
+        {% if fact.votes %}
+            {% for vote in fact.votes %}
+                <div class="vote-card">
+                    <p class="vote-type">Verdict: <span class="{{ 'fact' if vote.is_fact else 'fake' }}">
+                        {{ 'Fact' if vote.is_fact else 'Fake' }}
+                    </span></p>
+                    <p class="voter">By: {{ vote.user.name }}</p>
+                    {% if vote.supporting_info %}
+                        <p class="supporting-info">{{ vote.supporting_info }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No votes yet. Be the first to verify this fact!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

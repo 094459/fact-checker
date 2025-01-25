@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Submit a New Fact</h2>
+    <form method="POST" action="{{ url_for('main.create_fact') }}">
+        <div class="form-group">
+            <label for="category_id">Category</label>
+            <select id="category_id" name="category_id" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                <option value="{{ category.category_id }}">{{ category.category_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fact_text">Fact</label>
+            <textarea id="fact_text" name="fact_text" required rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="supporting_url">Supporting URL (optional)</label>
+            <input type="url" id="supporting_url" name="supporting_url">
+        </div>
+        <div class="form-group">
+            <label for="supporting_info">Supporting Information (optional)</label>
+            <textarea id="supporting_info" name="supporting_info" rows="3"></textarea>
+        </div>
+        <button type="submit">Submit Fact</button>
+    </form>
+</div>
+{% endblock %}

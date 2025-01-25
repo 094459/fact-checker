@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="welcome-section">
+        <h1>Welcome to Fact Checker</h1>
+        <p class="app-description">
+            This application helps verify facts through community voting. Browse existing facts,
+            submit new ones, or help verify the authenticity of submitted facts by voting.
+        </p>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('facts.create') }}" class="button primary">Create New Fact</a>
+        <a href="{{ url_for('facts.create_category') }}" class="button secondary">Create Category</a>
+    </div>
+
+    <div class="facts-list">
+        <h2>Recent Facts</h2>
+        {% if facts %}
+            {% for fact in facts %}
+                <div class="fact-card">
+                    <h3>{{ fact.title }}</h3>
+                    <p class="fact-meta">
+                        Category: {{ fact.category.name }} |
+                        Posted by: {{ fact.author.name }} |
+                        {{ fact.created_at.strftime('%Y-%m-%d') }}
+                    </p>
+                    <p class="fact-preview">{{ fact.content[:200] }}...</p>
+                    <div class="fact-votes">
+                        <span class="fact-vote">Fact: {{ fact.votes|selectattr('vote_type', 'equalto', 'Fact')|list|length }}</span>
+                        <span class="fake-vote">Fake: {{ fact.votes|selectattr('vote_type', 'equalto', 'Fake')|list|length }}</span>
+                    </div>
+                    <a href="{{ url_for('facts.view', fact_id=fact.id) }}" class="button">Read More</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No facts have been submitted yet. Be the first to share a fact!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

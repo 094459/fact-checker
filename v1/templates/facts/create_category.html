@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="create-category">
+    <h2>Create New Category</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Category Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+            <small>Optional: Provide a brief description of this category</small>
+        </div>
+        
+        <button type="submit" class="button primary">Create Category</button>
+    </form>
+</div>
+{% endblock %}

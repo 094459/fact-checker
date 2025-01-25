@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fact-detail">
+    <div class="fact-card">
+        <h2>{{ fact.fact_text }}</h2>
+        <div class="fact-meta">
+            <p>Category: {{ fact.category.category_name }}</p>
+            <p>Posted by: {{ fact.author.username }}</p>
+            <p>Posted on: {{ fact.created_at.strftime('%Y-%m-%d') }}</p>
+        </div>
+        
+        {% if fact.supporting_url %}
+        <div class="fact-support">
+            <h3>Supporting URL:</h3>
+            <a href="{{ fact.supporting_url }}" target="_blank" rel="noopener noreferrer">{{ fact.supporting_url }}</a>
+        </div>
+        {% endif %}
+        
+        {% if fact.supporting_info %}
+        <div class="fact-support">
+            <h3>Supporting Information:</h3>
+            <p>{{ fact.supporting_info }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="voting-section">
+            <h3>Vote on this fact:</h3>
+            <form method="POST" action="{{ url_for('main.vote_fact', fact_id=fact.fact_id) }}" class="fact-actions">
+                <button type="submit" name="vote" value="true" class="vote-true">True</button>
+                <button type="submit" name="vote" value="false" class="vote-false">False</button>
+            </form>
+            
+            <div class="vote-stats">
+                {% set votes = fact.votes|list %}
+                {% if votes %}
+                    {% set true_votes = votes|selectattr('is_true')|list %}
+                    {% set percentage = (true_votes|length / votes|length * 100)|round|int %}
+                    <p>{{ percentage }}% of voters think this is true ({{ votes|length }} total votes)</p>
+                {% else %}
+                    <p>No votes yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

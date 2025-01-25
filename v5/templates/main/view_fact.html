@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ fact.content[:50] }} - Fact Check{% endblock %}
+
+{% block content %}
+<div class="fact-detail">
+    <div class="fact-content">
+        <h2>{{ fact.content }}</h2>
+        <div class="fact-meta">
+            <p>Category: {{ fact.category.name }}</p>
+            <p>Posted by: {{ fact.author.username }}</p>
+            <p>Created on: {{ fact.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        </div>
+    </div>
+
+    {% if fact.supporting_url or fact.supporting_info %}
+    <div class="supporting-info">
+        <h3>Supporting Information</h3>
+        {% if fact.supporting_url %}
+            <p><strong>Source URL:</strong> <a href="{{ fact.supporting_url }}" target="_blank">{{ fact.supporting_url }}</a></p>
+        {% endif %}
+        {% if fact.supporting_info %}
+            <p><strong>Additional Information:</strong></p>
+            <p>{{ fact.supporting_info }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="voting-section">
+        <h3>Verify this fact:</h3>
+        <div class="vote-buttons">
+            <form action="{{ url_for('main.vote_fact', fact_id=fact.fact_id) }}" method="POST" style="display: inline;">
+                <input type="hidden" name="vote_type" value="FACT">
+                <button type="submit" class="btn btn-fact">Fact ({{ fact.fact_votes_count() }})</button>
+            </form>
+            <form action="{{ url_for('main.vote_fact', fact_id=fact.fact_id) }}" method="POST" style="display: inline;">
+                <input type="hidden" name="vote_type" value="FAKE">
+                <button type="submit" class="btn btn-fake">Fake ({{ fact.fake_votes_count() }})</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

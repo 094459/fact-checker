@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}View Fact{% endblock %}
+
+{% block content %}
+<div class="fact-detail">
+    <div class="fact-header">
+        <h1>Fact Details</h1>
+        <span class="category-badge">{{ fact.category.name }}</span>
+    </div>
+
+    <div class="fact-body">
+        <p class="fact-content">{{ fact.content }}</p>
+        
+        {% if fact.supporting_url %}
+            <div class="supporting-info">
+                <h3>Supporting URL</h3>
+                <a href="{{ fact.supporting_url }}" target="_blank" rel="noopener noreferrer">{{ fact.supporting_url }}</a>
+            </div>
+        {% endif %}
+
+        {% if fact.supporting_info %}
+            <div class="supporting-info">
+                <h3>Additional Information</h3>
+                <p>{{ fact.supporting_info }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="voting-section">
+        <h3>Vote on this Fact</h3>
+        <form action="{{ url_for('main.vote_fact', fact_id=fact.fact_id) }}" method="post" class="vote-form">
+            <button type="submit" name="vote_type" value="FACT" class="btn fact-btn">FACT</button>
+            <button type="submit" name="vote_type" value="FAKE" class="btn fake-btn">FAKE</button>
+        </form>
+
+        <div class="vote-stats">
+            {% set fact_votes = fact.votes|selectattr("vote_type", "equalto", "FACT")|list|length %}
+            {% set fake_votes = fact.votes|selectattr("vote_type", "equalto", "FAKE")|list|length %}
+            <div class="stat">
+                <span class="label">Fact Votes:</span>
+                <span class="value">{{ fact_votes }}</span>
+            </div>
+            <div class="stat">
+                <span class="label">Fake Votes:</span>
+                <span class="value">{{ fake_votes }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="meta-info">
+        <p>Submitted by: {{ fact.user.name or fact.user.email }}</p>
+        <p>Created: {{ fact.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% if fact.updated_at != fact.created_at %}
+            <p>Last updated: {{ fact.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

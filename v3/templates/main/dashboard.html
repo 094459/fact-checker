@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="welcome">
+        <h1>Welcome to Fact Check</h1>
+        <p>Welcome to the Fact Check application! Here you can browse facts submitted by users, vote on their accuracy, and contribute your own facts for verification by the community.</p>
+    </div>
+    
+    <div class="facts-list">
+        <h2>Recent Facts</h2>
+        {% for fact in facts %}
+        <div class="fact-card">
+            <h3>{{ fact.fact_text }}</h3>
+            <div class="fact-meta">
+                <span>Category: {{ fact.category.category_name }}</span>
+                <span>Posted by: {{ fact.author.username }}</span>
+                <span>Posted on: {{ fact.created_at.strftime('%Y-%m-%d') }}</span>
+            </div>
+            <div class="fact-actions">
+                <a href="{{ url_for('main.view_fact', fact_id=fact.fact_id) }}" class="button">View Details</a>
+            </div>
+        </div>
+        {% else %}
+        <p>No facts have been submitted yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
